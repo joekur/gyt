@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+require_relative '../lib/gyt.rb'
+
+cmd = ARGV[0]
+case cmd
+when "init"
+  repo = Gyt::Repository.new(".")
+end
