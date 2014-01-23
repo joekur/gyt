@@ -1,19 +1,40 @@
 module Gyt
   class Blob
-    def self.save(repo, content)
+    TYPE = "blob"
+
+    def self.write(repo, content)
       body = self.header(content) + content
       Gyt::Store.new(repo).write(body)
     end
 
-    def self.header(content)
-      "blob #{content.bytesize}\0"
+    def self.read(repo, sha1)
+      object_file = Gyt::Store.new(repo).read(sha1)
+      header, content = object_file.split("\0", 2)
+      type, bytesize = header.split(" ", 2)
+      raise "Not a blob object" if type != Gyt::Blob::TYPE
+
+      self.new(content)
     end
 
-    attr_reader :bytesize, :content
-    def initialize(repo, key)
-      object_body = Gyt::Store.new(repo).read(key)
-      header, @content = object_body.split("\0", 2)
-      @bytesize = header.split(" ")[1].to_i
+    attr_reader :content
+    def initialize(content)
+      @content = content
+    end
+
+    def header
+      "#{type} #{content.bytesize}\0"
+    end
+
+    def to_s
+      header + content
+    end
+
+    def type
+      TYPE
+    end
+
+    def write(repo)
+      Gyt::Store.new(repo).write(self.to_s)
     end
   end
 end

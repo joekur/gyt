@@ -7,11 +7,27 @@ module Gyt
     end
 
     def files
-      Dir.entries(path).select {|f| !File.directory?(f) }
+      entries.select {|f| !File.directory?(f) }
     end
 
     def directories
-      Dir.entries(path).select {|f| File.directory?(f) }
+      entries.select {|f| File.directory?(f) }
+    end
+
+    def entries
+      entry_names = Dir.entries(path) - ['.', '..', '.gyt']
+      entry_names.map do |entry_name|
+        full_path = File.join(path, entry_name)
+        if File.directory?(full_path)
+          Gyt::Directory.new(full_path)
+        else
+          Gyt::Entry.new(full_path)
+        end
+      end
+    end
+
+    def directory?
+      true
     end
   end
 end

@@ -1,22 +1,22 @@
 require "spec_helper"
 
 describe Gyt::Blob do
-  describe "self.save" do
-    it "correctly formats the blob" do
+  describe "self.read" do
+    it "parses the blob" do
       content = "This is some content"
-      key = Gyt::Blob.save(test_repo, content)
-      Gyt::Store.new(test_repo).read(key).should == "blob #{content.bytesize}\0This is some content"
+      sha1 = Gyt::Blob.new(content).write(test_repo)
+      blob = Gyt::Blob.read(test_repo, sha1)
+
+      blob.content.should == content
     end
   end
 
-  describe "initialize" do
-    it "parses the blob" do
+  describe "to_s" do
+    it "correctly formats the blob file" do
       content = "This is some content"
-      key = Gyt::Blob.save(test_repo, content)
-      blob = Gyt::Blob.new(test_repo, key)
+      blob = Gyt::Blob.new(content)
 
-      blob.bytesize.should == content.bytesize
-      blob.content.should == content
+      blob.to_s.should == "blob #{content.bytesize}\0This is some content"
     end
   end
 end

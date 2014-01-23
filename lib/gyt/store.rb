@@ -1,30 +1,30 @@
+require 'zlib'
+require 'digest/sha1'
+
 module Gyt
   class Store
-    require 'zlib'
-    require 'digest/sha1'
-
     def initialize(repo)
       @repo = repo
     end
 
     def write(data)
-      key = Digest::SHA1.hexdigest(data)
+      sha1 = Digest::SHA1.hexdigest(data)
       zipped_content = Zlib::Deflate.deflate(data)
-      file_path = path_for(key)
+      file_path = path_for(sha1)
 
       Dir.mkdir(File.dirname(file_path))
       File.write(file_path, zipped_content)
 
-      key
+      sha1
     end
 
-    def read(key)
-      zipped_content = File.read(path_for(key))
+    def read(sha1)
+      zipped_content = File.read(path_for(sha1))
       Zlib::Inflate.inflate(zipped_content)
     end
 
-    def path_for(key)
-      File.join(@repo.gyt_path, "objects", key[0,2], key[2,38])
+    def path_for(sha1)
+      File.join(@repo.gyt_path, "objects", sha1[0,2], sha1[2,38])
     end
   end
 end
