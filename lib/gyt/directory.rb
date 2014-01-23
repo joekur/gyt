@@ -7,11 +7,11 @@ module Gyt
     end
 
     def files
-      entries.select {|f| !File.directory?(f) }
+      entries.select {|e| !e.directory? }
     end
 
     def directories
-      entries.select {|f| File.directory?(f) }
+      entries.select {|e| e.directory? }
     end
 
     def entries

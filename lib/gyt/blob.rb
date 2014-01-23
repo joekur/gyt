@@ -16,7 +16,8 @@ module Gyt
       self.new(content)
     end
 
-    attr_reader :content, :name
+    attr_reader :content
+    attr_accessor :name
     def initialize(content, name=nil)
       @content = content
       @name = name

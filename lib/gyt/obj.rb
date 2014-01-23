@@ -11,7 +11,7 @@ module Gyt
     end
 
     def sha1
-      Digest::SHA1.hexdigest(content)
+      Digest::SHA1.hexdigest(to_store)
     end
   end
 end

@@ -19,7 +19,15 @@ module Gyt
 
     def setup_gyt_folder
       Dir.mkdir(@gyt_path)
-      Dir.mkdir(File.join(@gyt_path, "objects"))
+      Dir.mkdir(objects_dir.path)
+    end
+
+    def ls_files
+      objects_dir.directories.map(&:files).flatten
+    end
+
+    def objects_dir
+      @objects_dir ||= Gyt::Directory.new File.join(@gyt_path, "objects")
     end
   end
 end
