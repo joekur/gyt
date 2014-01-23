@@ -11,12 +11,12 @@ describe Gyt::Blob do
     end
   end
 
-  describe "to_s" do
+  describe "to_store" do
     it "correctly formats the blob file" do
       content = "This is some content"
       blob = Gyt::Blob.new(content)
 
-      blob.to_s.should == "blob #{content.bytesize}\0This is some content"
+      blob.to_store.should == "blob #{content.bytesize}\0This is some content"
     end
   end
 end

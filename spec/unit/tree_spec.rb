@@ -15,13 +15,13 @@ describe Gyt::Tree do
     end
   end
 
-  describe "to_s" do
-    xit "correctly formats the tree file" do
-      blob1 = Gyt::Blob.new("text1")
-      blob2 = Gyt::Blob.new("text2")
-      tree = Gyt::Tree.new([blob1, blob2])
+  describe "to_store" do
+    it "correctly formats the tree file" do
+      blob = Gyt::Blob.new("text1", "file.txt")
+      subtree = Gyt::Tree.new([], "src")
+      tree = Gyt::Tree.new([blob, subtree])
 
-      tree.to_s.should == "tree\0blob #{blob1.sha1}"
+      tree.to_store.should == "tree\0blob #{blob.sha1} file.txt\ntree #{subtree.sha1} src"
     end
   end
 end

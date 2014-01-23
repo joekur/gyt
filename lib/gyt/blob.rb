@@ -1,5 +1,5 @@
 module Gyt
-  class Blob
+  class Blob < Obj
     TYPE = "blob"
 
     def self.write(repo, content)
@@ -16,25 +16,18 @@ module Gyt
       self.new(content)
     end
 
-    attr_reader :content
-    def initialize(content)
+    attr_reader :content, :name
+    def initialize(content, name=nil)
       @content = content
+      @name = name
     end
 
     def header
-      "#{type} #{content.bytesize}\0"
-    end
-
-    def to_s
-      header + content
+      "#{type} #{content.bytesize}"
     end
 
     def type
       TYPE
-    end
-
-    def write(repo)
-      Gyt::Store.new(repo).write(self.to_s)
     end
   end
 end

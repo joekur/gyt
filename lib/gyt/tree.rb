@@ -1,5 +1,5 @@
 module Gyt
-  class Tree
+  class Tree < Obj
     TYPE = "tree"
 
     def self.read(repo, sha1)
@@ -15,10 +15,11 @@ module Gyt
     def self.build_from_dir(directory)
       children = []
       directory.entries.each do |entry|
+        entry_name = File.basename(entry.path)
         child = if entry.directory?
-                Gyt::Tree.new(entry)
+                Gyt::Tree.new(entry, entry_name)
               else
-                Gyt::Blob.new(entry.content)
+                Gyt::Blob.new(entry.content, entry_name)
               end
         children << child
       end
@@ -26,21 +27,24 @@ module Gyt
       self.new(children)
     end
 
-    attr_reader :children
-    def initialize(children)
+    attr_reader :children, :name
+    def initialize(children, name=nil)
       @children = children
+      @name = name
     end
 
     def header
-      "#{TYPE}\0"
+      TYPE
     end
 
-    def to_s
-      # not implemented
+    def content
+      children.map do |child|
+        "#{child.type} #{child.sha1} #{child.name}"
+      end.join("\n")
     end
 
-    def write(repo)
-      # not implemented
+    def type
+      TYPE
     end
   end
 end
