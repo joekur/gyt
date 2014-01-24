@@ -1,9 +1,10 @@
 #!/usr/bin/env ruby
 
-require_relative '../lib/gyt.rb'
+# require_relative '../lib/gyt.rb'
+require 'gyt'
 
 cmd = ARGV[0]
 case cmd
 when "init"
-  repo = Gyt::Repository.new(".")
+  repo = Gyt::Repository.init(File.expand_path('.'))
 end
