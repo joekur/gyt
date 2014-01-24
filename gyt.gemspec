@@ -8,6 +8,7 @@ Gem::Specification.new do |s|
   s.email       = 'joedoku@gmail.com'
   s.license     = 'MIT'
 
+  s.add_dependency 'thor'
   s.add_development_dependency 'rspec'
 
   s.files         = `git ls-files`.split("\n")
