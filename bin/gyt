@@ -3,8 +3,16 @@
 # require_relative '../lib/gyt.rb'
 require 'gyt'
 
+current_dir = File.expand_path('.')
+
 cmd = ARGV[0]
 case cmd
 when "init"
-  repo = Gyt::Repository.init(File.expand_path('.'))
+  repo = Gyt::Repository.init(current_dir)
+when "add"
+  repo = Gyt::Repository.new(current_dir)
+  repo.add(ARGV[1])
+when "status"
+  repo = Gyt::Repository.new(current_dir)
+  repo.status
 end

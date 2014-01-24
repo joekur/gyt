@@ -32,14 +32,18 @@ module Gyt
         children << child
       end
 
-      self.new(children)
+      self.new(children, directory.name)
     end
 
     attr_reader :children
     attr_accessor :name
-    def initialize(children, name=nil)
+    def initialize(children=[], name=nil)
       @children = children
       @name = name
+    end
+
+    def add_child(child)
+      children << child
     end
 
     def header
@@ -53,7 +57,7 @@ module Gyt
     end
 
     def write(repo)
-      children.each {|c| c.write(repo) }
+      children.each {|c| c.write(repo)}
       super
     end
 

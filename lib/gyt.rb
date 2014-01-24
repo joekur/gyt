@@ -1,5 +1,6 @@
 require "gyt/repository"
 require "gyt/entry"
+require "gyt/document"
 require "gyt/directory"
 require "gyt/store"
 require "gyt/obj"

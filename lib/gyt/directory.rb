@@ -1,5 +1,5 @@
 module Gyt
-  class Directory
+  class Directory < Entry
     attr_reader :path
 
     def initialize(path)
@@ -18,11 +18,7 @@ module Gyt
       entry_names = Dir.entries(path) - ['.', '..', '.gyt']
       entry_names.map do |entry_name|
         full_path = File.join(path, entry_name)
-        if File.directory?(full_path)
-          Gyt::Directory.new(full_path)
-        else
-          Gyt::Entry.new(full_path)
-        end
+        Gyt::Entry.build(full_path)
       end
     end
 

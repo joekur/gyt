@@ -17,9 +17,5 @@ module Gyt
     def ==(t)
       self.content == t.content
     end
-
-    def <=>(o)
-      self.name <=> o.name
-    end
   end
 end

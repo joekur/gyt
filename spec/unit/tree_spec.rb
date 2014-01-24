@@ -64,6 +64,14 @@ describe Gyt::Tree do
       user = models.children.first
       user.name.should == "user.rb"
     end
+
+    it "stores directory name on tree" do
+      write_test_file("/lib/user.rb", "User")
+      dir = Gyt::Directory.new(File.join(test_repo.path, "lib"))
+      tree = Gyt::Tree.build_from_dir(dir)
+
+      tree.name.should == "lib"
+    end
   end
 
   describe "to_store" do

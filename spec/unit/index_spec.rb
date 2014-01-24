@@ -35,14 +35,14 @@ describe Gyt::Index do
     end
 
     it "inserts object sorted alphabetically" do
-      file1 = Gyt::Blob.new("text", "zzz.txt")
-      file2 = Gyt::Blob.new("text", "aaa.txt")
-      file3 = Gyt::Blob.new("text", "kkk.txt")
-      index.add(file1)
-      index.add(file2)
-      index.add(file3)
+      obj1 = Gyt::Blob.new("text", "zzz.txt")
+      obj2 = Gyt::Tree.new([], "aaa")
+      obj3 = Gyt::Blob.new("text", "kkk.txt")
+      index.add(obj1)
+      index.add(obj2)
+      index.add(obj3)
 
-      index.objects.should == [file2, file3, file1]
+      index.objects.should == [obj2, obj3, obj1]
     end
   end
 

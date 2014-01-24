@@ -11,7 +11,6 @@ module Gyt
     def initialize(directory_path)
       @dir = Directory.new(directory_path)
       @gyt_path = File.join(directory_path, ".gyt")
-
     end
 
     def path
@@ -33,6 +32,28 @@ module Gyt
       init_file('index')
     end
 
+    def add(filepath)
+      filepath = File.join(path, filepath)
+      entry = Gyt::Entry.build(filepath)
+      obj = if entry.directory?
+              Gyt::Tree.build_from_dir(entry)
+            else
+              Gyt::Blob.new(entry.content, entry.name)
+            end
+      index.add(obj)
+    end
+
+    def staged
+      index.objects
+    end
+
+    def status
+      puts "Changes to be committed:"
+      index.objects.each do |obj|
+        puts obj.name
+      end
+    end
+
   private
 
     def objects_dir
@@ -47,6 +68,10 @@ module Gyt
     def init_file(path)
       full_path = File.join(@gyt_path, path)
       File.write(full_path, "") unless File.file?(full_path)
+    end
+
+    def index
+      @index ||= Gyt::Index.new(self)
     end
   end
 end

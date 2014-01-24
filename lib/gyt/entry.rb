@@ -1,17 +1,16 @@
 module Gyt
   class Entry
-    attr_reader :path
-
-    def initialize(path)
-      @path = File.expand_path(path)
+    def self.build(path)
+      path = File.expand_path(path)
+      if File.directory?(path)
+        Gyt::Directory.new(path)
+      else
+        Gyt::Document.new(path)
+      end
     end
 
-    def directory?
-      false
-    end
-
-    def content
-      File.read(path)
+    def name
+      File.basename(path)
     end
   end
 end

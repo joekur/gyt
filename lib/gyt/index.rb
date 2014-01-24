@@ -20,7 +20,7 @@ module Gyt
 
     def add(obj)
       objects << obj
-      objects.sort
+      objects.sort! {|a,b| a.name <=> b.name}
       obj.write(@repo)
       write
     end
