@@ -19,7 +19,7 @@ describe Gyt::Tree do
       subtree = Gyt::Tree.new([], "src")
       sha1 = Gyt::Tree.new([blob, subtree]).write(test_repo)
 
-      test_repo.ls_files.length.should == 3
+      test_repo.ls_objects.length.should == 3
     end
   end
 

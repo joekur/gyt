@@ -13,5 +13,13 @@ module Gyt
     def sha1
       Digest::SHA1.hexdigest(to_store)
     end
+
+    def ==(t)
+      self.content == t.content
+    end
+
+    def <=>(o)
+      self.name <=> o.name
+    end
   end
 end

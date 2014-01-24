@@ -18,7 +18,7 @@ module Gyt
       dir.path
     end
 
-    def ls_files
+    def ls_objects
       objects_dir.directories.map(&:files).flatten
     end
 
