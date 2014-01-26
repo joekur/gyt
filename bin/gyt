@@ -22,7 +22,7 @@ class GytCLI < Thor
   end
 
   desc "commit", "Commit files to history"
-  method_option :message, aliases: "-m", desc: "Commit message"
+  method_option :message, aliases: "-m", desc: "Commit message", required: true
   def commit
     repo = Gyt::Repository.new(current_dir)
     repo.commit!(options[:message])

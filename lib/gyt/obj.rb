@@ -4,8 +4,11 @@ module Gyt
   class Obj
     def self.read(repo, sha1)
       object_file = Gyt::Store.new(repo).read(sha1)
+      return if object_file.nil?
+
       header = object_file.split("\0").first
       type = header.split(" ").first
+
       case type
       when Gyt::Blob::TYPE
         Gyt::Blob.read(repo, sha1)

@@ -22,6 +22,8 @@ module Gyt
     def read(sha1)
       zipped_content = File.read(path_for(sha1))
       Zlib::Inflate.inflate(zipped_content)
+    rescue Errno::ENOENT
+      nil
     end
 
     def clean(sha1)

@@ -59,6 +59,9 @@ describe Gyt::Repository do
       test_repo.staged.should be_empty
     end
 
-    it "does not create a commit object if index is empty"
+    it "does not create a commit object if index is empty" do
+      test_repo.commit!("message").should be_false
+      test_repo.ls_objects.should be_empty
+    end
   end
 end

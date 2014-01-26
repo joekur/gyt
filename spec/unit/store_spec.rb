@@ -9,8 +9,14 @@ describe Gyt::Store do
     store.read(key).should == data
   end
 
+  describe "read" do
+    it "returns nil if file doesn't exist" do
+      store.read("idontexist").should be_nil
+    end
+  end
+
   describe "store" do
-    it "will only write one object to file" do
+    it "will only write one object to file if duplicate" do
       store.write("data")
       store.write("data")
       test_repo.ls_objects.length.should == 1

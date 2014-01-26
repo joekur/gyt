@@ -44,6 +44,10 @@ module Gyt
     end
 
     def commit!(msg, options={})
+      if staged.empty?
+        puts "Nothing to commit"
+        return false
+      end
       commit_tree = Gyt::Tree.new(staged)
       commit = Gyt::Commit.new(msg, commit_tree, options)
       sha1 = commit.write(self)
