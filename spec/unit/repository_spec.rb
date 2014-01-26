@@ -30,4 +30,35 @@ describe Gyt::Repository do
       test_repo.staged.first.children.length.should == 1
     end
   end
+
+  describe "commit!" do
+    it "creates a new commit" do
+      write_test_file("readme.md", "Gyt rools!")
+      test_repo.add("readme.md")
+      sha1 = test_repo.commit!("message")
+
+      commit = Gyt::Obj.read(test_repo, sha1)
+      commit.should_not be_nil
+      commit.type.should == Gyt::Commit::TYPE
+    end
+
+    it "creates a new tree from staged objects" do
+      write_test_file("readme.md", "Gyt rools!")
+      test_repo.add("readme.md")
+      sha1 = test_repo.commit!("message")
+
+      commit = Gyt::Obj.read(test_repo, sha1)
+      commit.tree.children.first.name.should == "readme.md"
+    end
+
+    it "cleans the index" do
+      write_test_file("readme.md", "Gyt rools!")
+      test_repo.add("readme.md")
+      test_repo.commit!("message")
+
+      test_repo.staged.should be_empty
+    end
+
+    it "does not create a commit object if index is empty"
+  end
 end

@@ -2,11 +2,6 @@ module Gyt
   class Blob < Obj
     TYPE = "blob"
 
-    def self.write(repo, content)
-      body = self.header(content) + content
-      Gyt::Store.new(repo).write(body)
-    end
-
     def self.read(repo, sha1)
       object_file = Gyt::Store.new(repo).read(sha1)
       header, content = object_file.split("\0", 2)

@@ -46,6 +46,20 @@ describe Gyt::Index do
     end
   end
 
+  describe "clean" do
+    it "removes all objects from index" do
+      index = Gyt::Index.new(test_repo)
+      index.add(Gyt::Blob.new("text", "file.txt"))
+      index.clean
+
+      puts index.objects
+      index.objects.should be_empty
+    end
+
+    it "removes all objects from store"
+    it "adds current commit as its parent"
+  end
+
   describe "write" do
     it "updates index file with all objects" do
       file1 = Gyt::Blob.new("text1", "file1.txt")

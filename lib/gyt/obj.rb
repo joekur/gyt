@@ -2,6 +2,20 @@ require 'digest/sha1'
 
 module Gyt
   class Obj
+    def self.read(repo, sha1)
+      object_file = Gyt::Store.new(repo).read(sha1)
+      header = object_file.split("\0").first
+      type = header.split(" ").first
+      case type
+      when Gyt::Blob::TYPE
+        Gyt::Blob.read(repo, sha1)
+      when Gyt::Tree::TYPE
+        Gyt::Tree.read(repo, sha1)
+      when Gyt::Commit::TYPE
+        Gyt::Commit.read(repo, sha1)
+      end
+    end
+
     def to_store
       "#{header}\0#{content}"
     end

@@ -21,6 +21,13 @@ class GytCLI < Thor
     repo.status
   end
 
+  desc "commit", "Commit files to history"
+  method_option :message, aliases: "-m", desc: "Commit message"
+  def commit
+    repo = Gyt::Repository.new(current_dir)
+    repo.commit!(options[:message])
+  end
+
   no_commands do
     def current_dir
       File.expand_path('.')

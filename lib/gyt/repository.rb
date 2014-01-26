@@ -18,7 +18,7 @@ module Gyt
     end
 
     def ls_objects
-      objects_dir.directories.map(&:files).flatten
+      objects_dir.directories.map(&:files).flatten.map(&:path)
     end
 
     def setup_gyt_folder
@@ -41,6 +41,15 @@ module Gyt
               Gyt::Blob.new(entry.content, entry.name)
             end
       index.add(obj)
+    end
+
+    def commit!(msg, options={})
+      commit_tree = Gyt::Tree.new(staged)
+      commit = Gyt::Commit.new(msg, commit_tree, options)
+      sha1 = commit.write(self)
+      index.clean
+
+      sha1
     end
 
     def staged

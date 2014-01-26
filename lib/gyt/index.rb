@@ -25,6 +25,11 @@ module Gyt
       write
     end
 
+    def clean
+      self.objects = []
+      write
+    end
+
     def write
       File.write(path, to_store)
     end
