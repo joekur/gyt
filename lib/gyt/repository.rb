@@ -57,7 +57,7 @@ module Gyt
       options[:parent] = head unless head.nil?
       commit = Gyt::Commit.new(msg, commit_tree, options)
       commit.write(self)
-      refs.get("refs/heads/master").set(commit.sha1)
+      refs.get("refs/heads/master").set(commit.id)
       index.clean
 
       commit

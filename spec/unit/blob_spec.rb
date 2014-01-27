@@ -4,8 +4,8 @@ describe Gyt::Blob do
   describe "self.read" do
     it "parses the blob" do
       content = "This is some content"
-      sha1 = Gyt::Blob.new(content).write(test_repo)
-      blob = Gyt::Blob.read(test_repo, sha1)
+      id = Gyt::Blob.new(content).write(test_repo)
+      blob = Gyt::Blob.read(test_repo, id)
 
       blob.content.should == content
     end

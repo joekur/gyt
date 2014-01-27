@@ -2,18 +2,18 @@ module Gyt
   class Tree < Obj
     TYPE = "tree"
 
-    def self.read(repo, sha1)
-      object_file = Gyt::Store.new(repo).read(sha1)
+    def self.read(repo, id)
+      object_file = Gyt::Store.new(repo).read(id)
       header, contents = object_file.split("\0", 2)
       type = header
       raise "Not a tree object" if type != Gyt::Tree::TYPE
 
       children = contents.split("\n").map do |child_info|
-        child_type, sha1, name = child_info.split(" ", 3)
+        child_type, id, name = child_info.split(" ", 3)
         if child_type == Gyt::Tree::TYPE
-          Gyt::Tree.read(repo, sha1)
+          Gyt::Tree.read(repo, id)
         else
-          Gyt::Blob.read(repo, sha1)
+          Gyt::Blob.read(repo, id)
         end.tap {|c| c.name = name}
       end
 
@@ -52,7 +52,7 @@ module Gyt
 
     def content
       children.map do |child|
-        "#{child.type} #{child.sha1} #{child.name}"
+        "#{child.type} #{child.id} #{child.name}"
       end.join("\n")
     end
 

@@ -2,8 +2,8 @@ module Gyt
   class Commit < Obj
     TYPE = "commit"
 
-    def self.read(repo, sha1)
-      object_file = Gyt::Store.new(repo).read(sha1)
+    def self.read(repo, id)
+      object_file = Gyt::Store.new(repo).read(id)
       header, rest = object_file.split("\0", 2)
       meta, msg = rest.split("\n\n", 2)
       type = header
@@ -33,7 +33,7 @@ module Gyt
     end
 
     def content
-      meta = {tree: @tree.sha1}.merge(@meta).map do |key, value|
+      meta = {tree: @tree.id}.merge(@meta).map do |key, value|
         "#{key} #{value}"
       end.join("\n")
       "#{meta}\n\n#{@message}"

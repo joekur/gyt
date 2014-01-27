@@ -9,11 +9,11 @@ module Gyt
 
     def load_objects
       @objects = File.read(path).split("\n").map do |object_info|
-        type, sha1, name = object_info.split(" ", 3)
+        type, id, name = object_info.split(" ", 3)
         if type == Gyt::Tree::TYPE
-          Gyt::Tree.read(@repo, sha1)
+          Gyt::Tree.read(@repo, id)
         else
-          Gyt::Blob.read(@repo, sha1)
+          Gyt::Blob.read(@repo, id)
         end.tap {|c| c.name = name}
       end
     end
@@ -36,7 +36,7 @@ module Gyt
 
     def to_store
       objects.map do |obj|
-        "#{obj.type} #{obj.sha1} #{obj.name}"
+        "#{obj.type} #{obj.id} #{obj.name}"
       end.join("\n")
     end
 

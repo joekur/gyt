@@ -7,12 +7,12 @@ describe Gyt::Commit do
       tree.write(test_repo)
       commit_obj = [
         "commit\0",
-        "tree #{tree.sha1}\n",
+        "tree #{tree.id}\n",
         "author John Smith <john@gmail.com>"
       ].join
 
-      sha1 = Gyt::Store.new(test_repo).write(commit_obj)
-      commit = Gyt::Commit.read(test_repo, sha1)
+      id = Gyt::Store.new(test_repo).write(commit_obj)
+      commit = Gyt::Commit.read(test_repo, id)
 
       commit.message.should
       commit.tree.should == tree
@@ -30,7 +30,7 @@ describe Gyt::Commit do
   describe "content" do
     it "formats data for tree and message" do
       commit = Gyt::Commit.new("message", Gyt::Tree.new)
-      commit.content.should == "tree #{commit.tree.sha1}\n\nmessage"
+      commit.content.should == "tree #{commit.tree.id}\n\nmessage"
     end
 
     it "includes any meta data" do

@@ -11,22 +11,22 @@ describe Gyt::Obj do
   end
 
   describe "write" do
-    it "returns a sha1" do
+    it "returns a sha1 id" do
       obj = TestObj.new
-      obj.write(test_repo).should == obj.sha1
+      obj.write(test_repo).should == obj.id
     end
   end
 
   describe "read" do
     it "returns the correct type of object based on the header type" do
-      sha = Gyt::Blob.new("").write(test_repo)
-      Gyt::Obj.read(test_repo, sha).should be_instance_of(Gyt::Blob)
+      id = Gyt::Blob.new("").write(test_repo)
+      Gyt::Obj.read(test_repo, id).should be_instance_of(Gyt::Blob)
 
-      sha = Gyt::Tree.new.write(test_repo)
-      Gyt::Obj.read(test_repo, sha).should be_instance_of(Gyt::Tree)
+      id = Gyt::Tree.new.write(test_repo)
+      Gyt::Obj.read(test_repo, id).should be_instance_of(Gyt::Tree)
 
-      sha = Gyt::Commit.new("", Gyt::Tree.new).write(test_repo)
-      Gyt::Obj.read(test_repo, sha).should be_instance_of(Gyt::Commit)
+      id = Gyt::Commit.new("", Gyt::Tree.new).write(test_repo)
+      Gyt::Obj.read(test_repo, id).should be_instance_of(Gyt::Commit)
     end
 
     it "returns nil if the object doesn't exist" do

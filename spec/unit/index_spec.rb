@@ -55,8 +55,6 @@ describe Gyt::Index do
       puts index.objects
       index.objects.should be_empty
     end
-
-    it "removes all objects from store"
   end
 
   describe "write" do

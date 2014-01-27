@@ -77,7 +77,7 @@ describe Gyt::Repository do
       test_repo.add("readme.md")
       commit = test_repo.commit!("message")
 
-      test_repo.head.should == commit.sha1
+      test_repo.head.should == commit.id
     end
 
     it "adds current commit as its parent" do
@@ -89,7 +89,7 @@ describe Gyt::Repository do
       test_repo.add("readme2.md")
       second_commit = test_repo.commit!("second commit")
 
-      second_commit.parent_id.should == first_commit.sha1
+      second_commit.parent_id.should == first_commit.id
     end
   end
 end

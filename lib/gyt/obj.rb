@@ -2,8 +2,8 @@ require 'digest/sha1'
 
 module Gyt
   class Obj
-    def self.read(repo, sha1)
-      object_file = Gyt::Store.new(repo).read(sha1)
+    def self.read(repo, id)
+      object_file = Gyt::Store.new(repo).read(id)
       return if object_file.nil?
 
       header = object_file.split("\0").first
@@ -11,11 +11,11 @@ module Gyt
 
       case type
       when Gyt::Blob::TYPE
-        Gyt::Blob.read(repo, sha1)
+        Gyt::Blob.read(repo, id)
       when Gyt::Tree::TYPE
-        Gyt::Tree.read(repo, sha1)
+        Gyt::Tree.read(repo, id)
       when Gyt::Commit::TYPE
-        Gyt::Commit.read(repo, sha1)
+        Gyt::Commit.read(repo, id)
       end
     end
 
@@ -27,7 +27,7 @@ module Gyt
       Gyt::Store.new(repo).write(self.to_store)
     end
 
-    def sha1
+    def id
       Digest::SHA1.hexdigest(to_store)
     end
 

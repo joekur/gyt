@@ -25,9 +25,9 @@ describe Gyt::Store do
 
   describe "clean" do
     it "removes file from store" do
-      sha1 = store.write("data")
+      id = store.write("data")
       test_repo.ls_objects.length.should == 1
-      store.clean(sha1)
+      store.clean(id)
       test_repo.ls_objects.length.should == 0
     end
   end

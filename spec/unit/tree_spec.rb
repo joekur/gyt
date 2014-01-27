@@ -4,9 +4,9 @@ describe Gyt::Tree do
   it "can read and write to object store" do
     blob = Gyt::Blob.new("text", "file.txt")
     subtree = Gyt::Tree.new([], "src")
-    sha1 = Gyt::Tree.new([blob, subtree]).write(test_repo)
+    id = Gyt::Tree.new([blob, subtree]).write(test_repo)
 
-    tree = Gyt::Tree.read(test_repo, sha1)
+    tree = Gyt::Tree.read(test_repo, id)
     tree.children.first.name.should == "file.txt"
     tree.children.first.content.should == "text"
     tree.children.last.name.should == "src"
@@ -17,7 +17,7 @@ describe Gyt::Tree do
     it "writes a file for itself and all children recursively" do
       blob = Gyt::Blob.new("text", "file.txt")
       subtree = Gyt::Tree.new([], "src")
-      sha1 = Gyt::Tree.new([blob, subtree]).write(test_repo)
+      Gyt::Tree.new([blob, subtree]).write(test_repo)
 
       test_repo.ls_objects.length.should == 3
     end
@@ -80,7 +80,7 @@ describe Gyt::Tree do
       subtree = Gyt::Tree.new([], "src")
       tree = Gyt::Tree.new([blob, subtree])
 
-      tree.to_store.should == "tree\0blob #{blob.sha1} file.txt\ntree #{subtree.sha1} src"
+      tree.to_store.should == "tree\0blob #{blob.id} file.txt\ntree #{subtree.id} src"
     end
   end
 end
