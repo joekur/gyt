@@ -28,6 +28,12 @@ class GytCLI < Thor
     repo.commit!(options[:message])
   end
 
+  desc "log", "Show commit history"
+  def log
+    repo = Gyt::Repository.new(current_dir)
+    repo.log
+  end
+
   no_commands do
     def current_dir
       File.expand_path('.')

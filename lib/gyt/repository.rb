@@ -54,7 +54,7 @@ module Gyt
         return
       end
       commit_tree = Gyt::Tree.new(staged)
-      options[:parent] = head
+      options[:parent] = head unless head.nil?
       commit = Gyt::Commit.new(msg, commit_tree, options)
       commit.write(self)
       refs.get("refs/heads/master").set(commit.sha1)
@@ -92,6 +92,20 @@ module Gyt
 
     def refs
       @refs ||= Gyt::Refs.new(self)
+    end
+
+    def log
+      id = head
+      while !id.nil?
+        commit = Gyt::Commit.read(self, id)
+        puts "commit #{id}"
+        puts "author: #{commit.author}"
+        puts ""
+        puts commit.message
+        puts ""
+
+        id = commit.parent_id
+      end
     end
 
   private
