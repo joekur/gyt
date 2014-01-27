@@ -45,19 +45,17 @@ describe Gyt::Repository do
     it "creates a new commit" do
       write_test_file("readme.md", "Gyt rools!")
       test_repo.add("readme.md")
-      sha1 = test_repo.commit!("message")
+      commit = test_repo.commit!("message")
 
-      commit = Gyt::Obj.read(test_repo, sha1)
       commit.should_not be_nil
-      commit.type.should == Gyt::Commit::TYPE
+      commit.should be_instance_of(Gyt::Commit)
     end
 
     it "creates a new tree from staged objects" do
       write_test_file("readme.md", "Gyt rools!")
       test_repo.add("readme.md")
-      sha1 = test_repo.commit!("message")
+      commit = test_repo.commit!("message")
 
-      commit = Gyt::Obj.read(test_repo, sha1)
       commit.tree.children.first.name.should == "readme.md"
     end
 
@@ -70,18 +68,28 @@ describe Gyt::Repository do
     end
 
     it "does not create a commit object if index is empty" do
-      test_repo.commit!("message").should be_false
+      test_repo.commit!("message").should be_nil
       test_repo.ls_objects.should be_empty
     end
 
     it "updates the head" do
       write_test_file("readme.md", "Gyt rools!")
       test_repo.add("readme.md")
-      sha1 = test_repo.commit!("message")
+      commit = test_repo.commit!("message")
 
-      test_repo.head.should == sha1
+      test_repo.head.should == commit.sha1
     end
 
-    it "adds current commit as its parent"
+    it "adds current commit as its parent" do
+      write_test_file("readme.md", "Gyt rools!")
+      test_repo.add("readme.md")
+      first_commit = test_repo.commit!("first commit")
+
+      write_test_file("readme2.md", "Gyt rools moar!")
+      test_repo.add("readme2.md")
+      second_commit = test_repo.commit!("second commit")
+
+      second_commit.parent_id.should == first_commit.sha1
+    end
   end
 end

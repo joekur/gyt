@@ -20,7 +20,7 @@ module Gyt
       self.new(msg, tree, meta_hash)
     end
 
-    attr_accessor :tree, :message, :author
+    attr_accessor :tree, :message
 
     def initialize(message, tree, meta={})
       @message = message
@@ -42,6 +42,10 @@ module Gyt
     def write(repo)
       @tree.write(repo)
       super
+    end
+
+    def parent_id
+      @meta[:parent]
     end
 
     def author

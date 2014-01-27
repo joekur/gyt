@@ -51,16 +51,16 @@ module Gyt
     def commit!(msg, options={})
       if staged.empty?
         puts "Nothing to commit"
-        return false
+        return
       end
       commit_tree = Gyt::Tree.new(staged)
       options[:parent] = head
       commit = Gyt::Commit.new(msg, commit_tree, options)
-      commit_id = commit.write(self)
-      refs.get("refs/heads/master").set(commit_id)
+      commit.write(self)
+      refs.get("refs/heads/master").set(commit.sha1)
       index.clean
 
-      commit_id
+      commit
     end
 
     def head
