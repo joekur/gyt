@@ -7,6 +7,16 @@ describe Gyt::Repository do
 
       Dir.entries(repo.dir.path).should include(".gyt")
       Dir.entries(repo.gyt_path).should include("objects")
+      Dir.entries(repo.gyt_path).should include("index")
+      Dir.entries(repo.gyt_path).should include("HEAD")
+      Dir.entries(repo.gyt_path).should include("refs")
+    end
+
+    it "points head to new branch master" do
+      repo = Gyt::Repository.init(@test_dir)
+
+      File.read(File.join(repo.gyt_path, "HEAD")).should == "ref: refs/heads/master"
+      repo.head.should be_nil
     end
   end
 
@@ -63,5 +73,15 @@ describe Gyt::Repository do
       test_repo.commit!("message").should be_false
       test_repo.ls_objects.should be_empty
     end
+
+    it "updates the head" do
+      write_test_file("readme.md", "Gyt rools!")
+      test_repo.add("readme.md")
+      sha1 = test_repo.commit!("message")
+
+      test_repo.head.should == sha1
+    end
+
+    it "adds current commit as its parent"
   end
 end

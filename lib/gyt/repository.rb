@@ -30,6 +30,11 @@ module Gyt
       init_folder('/')
       init_folder('objects')
       init_file('index')
+      init_file('HEAD')
+      init_folder('refs')
+      init_folder('refs/heads')
+      init_folder('refs/tags')
+      create_branch("master")
     end
 
     def add(filepath)
@@ -49,11 +54,29 @@ module Gyt
         return false
       end
       commit_tree = Gyt::Tree.new(staged)
+      options[:parent] = head
       commit = Gyt::Commit.new(msg, commit_tree, options)
-      sha1 = commit.write(self)
+      commit_id = commit.write(self)
+      refs.get("refs/heads/master").set(commit_id)
       index.clean
 
-      sha1
+      commit_id
+    end
+
+    def head
+      head_file = File.read(File.join(@gyt_path, "HEAD"))
+      if head_file.include?("ref: ")
+        ref_path = head_file.split(" ")[1]
+        refs.get(ref_path).id
+      else
+        head_file
+      end
+    end
+
+    def create_branch(branch)
+      ref_path = "refs/heads/#{branch}"
+      refs.create(ref_path)
+      File.write(File.join(@gyt_path, "HEAD"), "ref: #{ref_path}")
     end
 
     def staged
@@ -65,6 +88,10 @@ module Gyt
       index.objects.each do |obj|
         puts obj.name
       end
+    end
+
+    def refs
+      @refs ||= Gyt::Refs.new(self)
     end
 
   private

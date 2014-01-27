@@ -57,7 +57,6 @@ describe Gyt::Index do
     end
 
     it "removes all objects from store"
-    it "adds current commit as its parent"
   end
 
   describe "write" do
