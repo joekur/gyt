@@ -92,4 +92,22 @@ describe Gyt::Repository do
       second_commit.parent_id.should == first_commit.id
     end
   end
+
+  describe "log" do
+    it "loops through all parent commits" do
+      write_test_file("readme.md", "Gyt rools!")
+      test_repo.add("readme.md")
+      first_commit = test_repo.commit!("first commit")
+
+      write_test_file("readme2.md", "Gyt rools moar!")
+      test_repo.add("readme2.md")
+      second_commit = test_repo.commit!("second commit")
+
+      test_repo.log
+    end
+
+    it "outputs nothing on new repository" do
+      test_repo.log
+    end
+  end
 end

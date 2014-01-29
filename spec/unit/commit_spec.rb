@@ -42,4 +42,22 @@ describe Gyt::Commit do
       commit.content.should include("parent 1234")
     end
   end
+
+  describe "parent" do
+    it "is nil with no parent_id" do
+      commit = Gyt::Commit.new(test_repo, "message", Gyt::Tree.new(test_repo))
+      commit.parent.should be_nil
+    end
+
+    it "points to the parent commit" do
+      parent = Gyt::Commit.new(test_repo, "first commit", Gyt::Tree.new(test_repo))
+      parent.write
+      commit = Gyt::Commit.new(test_repo, "message", Gyt::Tree.new(test_repo), {
+        author: "John Smith",
+        parent: parent.id
+      })
+
+      commit.parent.should == parent
+    end
+  end
 end

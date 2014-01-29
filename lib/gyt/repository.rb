@@ -73,6 +73,10 @@ module Gyt
       end
     end
 
+    def head_commit
+      head.nil? ? nil : Gyt::Commit.read(self, head)
+    end
+
     def create_branch(branch)
       ref_path = "refs/heads/#{branch}"
       refs.create(ref_path)
@@ -95,16 +99,15 @@ module Gyt
     end
 
     def log
-      id = head
-      while !id.nil?
-        commit = Gyt::Commit.read(self, id)
-        puts "commit #{id}"
+      commit = head_commit
+      while !commit.nil?
+        puts "commit #{commit.id}"
         puts "author: #{commit.author}"
         puts ""
         puts commit.message
         puts ""
 
-        id = commit.parent_id
+        commit = commit.parent
       end
     end
 

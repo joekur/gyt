@@ -49,6 +49,10 @@ module Gyt
       @meta[:parent]
     end
 
+    def parent
+      parent_id.nil? ? nil : Gyt::Commit.read(@repo, parent_id)
+    end
+
     def author
       @meta[:author]
     end
