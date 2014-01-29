@@ -1,3 +1,6 @@
+require "thor"
+require "colorize"
+
 require "gyt/repository"
 require "gyt/entry"
 require "gyt/document"

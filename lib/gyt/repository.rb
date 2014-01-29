@@ -101,7 +101,7 @@ module Gyt
     def log
       commit = head_commit
       while !commit.nil?
-        puts "commit #{commit.id}"
+        puts "commit #{commit.id}".yellow
         puts "author: #{commit.author}"
         puts ""
         puts commit.message

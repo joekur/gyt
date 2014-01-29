@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
 require "gyt"
-require "thor"
 
 class GytCLI < Thor
   desc "init [PATH]", "Initialize new Gyt repository"
