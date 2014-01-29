@@ -23,8 +23,12 @@ module Gyt
       "#{header}\0#{content}"
     end
 
-    def write(repo)
-      Gyt::Store.new(repo).write(self.to_store)
+    def write
+      store.write(self.to_store)
+    end
+
+    def store
+      @store ||= Gyt::Store.new(@repo)
     end
 
     def id

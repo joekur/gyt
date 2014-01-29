@@ -17,27 +17,28 @@ module Gyt
         end.tap {|c| c.name = name}
       end
 
-      self.new(children)
+      self.new(repo, children)
     end
 
-    def self.build_from_dir(directory)
+    def self.build_from_dir(repo, directory)
       children = []
       directory.entries.each do |entry|
         entry_name = File.basename(entry.path)
         child = if entry.directory?
-                Gyt::Tree.build_from_dir(entry).tap {|t| t.name = entry_name}
+                Gyt::Tree.build_from_dir(repo, entry).tap {|t| t.name = entry_name}
               else
-                Gyt::Blob.new(entry.content, entry_name)
+                Gyt::Blob.new(repo, entry.content, entry_name)
               end
         children << child
       end
 
-      self.new(children, directory.name)
+      self.new(repo, children, directory.name)
     end
 
     attr_reader :children
     attr_accessor :name
-    def initialize(children=[], name=nil)
+    def initialize(repo, children=[], name=nil)
+      @repo = repo
       @children = children
       @name = name
     end
@@ -56,8 +57,8 @@ module Gyt
       end.join("\n")
     end
 
-    def write(repo)
-      children.each {|c| c.write(repo)}
+    def write
+      children.each {|c| c.write}
       super
     end
 

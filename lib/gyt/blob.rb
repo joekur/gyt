@@ -8,12 +8,13 @@ module Gyt
       type, bytesize = header.split(" ", 2)
       raise "Not a blob object" if type != Gyt::Blob::TYPE
 
-      self.new(content)
+      self.new(repo, content)
     end
 
     attr_reader :content
     attr_accessor :name
-    def initialize(content, name=nil)
+    def initialize(repo, content, name=nil)
+      @repo = repo
       @content = content
       @name = name
     end

@@ -2,6 +2,9 @@ require "spec_helper"
 
 describe Gyt::Obj do
   class TestObj < Gyt::Obj
+    def initialize(repo)
+      @repo = repo
+    end
     def content
       "test_content"
     end
@@ -12,20 +15,20 @@ describe Gyt::Obj do
 
   describe "write" do
     it "returns a sha1 id" do
-      obj = TestObj.new
-      obj.write(test_repo).should == obj.id
+      obj = TestObj.new(test_repo)
+      obj.write.should == obj.id
     end
   end
 
   describe "read" do
     it "returns the correct type of object based on the header type" do
-      id = Gyt::Blob.new("").write(test_repo)
+      id = Gyt::Blob.new(test_repo, "").write
       Gyt::Obj.read(test_repo, id).should be_instance_of(Gyt::Blob)
 
-      id = Gyt::Tree.new.write(test_repo)
+      id = Gyt::Tree.new(test_repo).write
       Gyt::Obj.read(test_repo, id).should be_instance_of(Gyt::Tree)
 
-      id = Gyt::Commit.new("", Gyt::Tree.new).write(test_repo)
+      id = Gyt::Commit.new(test_repo, "", Gyt::Tree.new(test_repo)).write
       Gyt::Obj.read(test_repo, id).should be_instance_of(Gyt::Commit)
     end
 

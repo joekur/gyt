@@ -3,8 +3,8 @@ require "spec_helper"
 describe Gyt::Commit do
   describe "self.read" do
     it "parses the commit object" do
-      tree = Gyt::Tree.new
-      tree.write(test_repo)
+      tree = Gyt::Tree.new(test_repo)
+      tree.write
       commit_obj = [
         "commit\0",
         "tree #{tree.id}\n",
@@ -22,19 +22,19 @@ describe Gyt::Commit do
 
   describe "header" do
     it "is the commit type" do
-      commit = Gyt::Commit.new("message", Gyt::Tree.new)
+      commit = Gyt::Commit.new(test_repo, "message", Gyt::Tree.new(test_repo))
       commit.header.should == "commit"
     end
   end
 
   describe "content" do
     it "formats data for tree and message" do
-      commit = Gyt::Commit.new("message", Gyt::Tree.new)
+      commit = Gyt::Commit.new(test_repo, "message", Gyt::Tree.new(test_repo))
       commit.content.should == "tree #{commit.tree.id}\n\nmessage"
     end
 
     it "includes any meta data" do
-      commit = Gyt::Commit.new("message", Gyt::Tree.new, {
+      commit = Gyt::Commit.new(test_repo, "message", Gyt::Tree.new(test_repo), {
         author: "John Smith",
         parent: "1234"
       })

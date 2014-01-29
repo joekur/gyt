@@ -17,12 +17,13 @@ module Gyt
 
       tree = Gyt::Tree.read(repo, meta_hash.delete(:tree))
 
-      self.new(msg, tree, meta_hash)
+      self.new(repo, msg, tree, meta_hash)
     end
 
     attr_accessor :tree, :message
 
-    def initialize(message, tree, meta={})
+    def initialize(repo, message, tree, meta={})
+      @repo = repo
       @message = message
       @tree = tree
       @meta = meta
@@ -39,8 +40,8 @@ module Gyt
       "#{meta}\n\n#{@message}"
     end
 
-    def write(repo)
-      @tree.write(repo)
+    def write
+      @tree.write
       super
     end
 

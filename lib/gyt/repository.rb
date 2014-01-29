@@ -41,9 +41,9 @@ module Gyt
       filepath = File.join(path, filepath)
       entry = Gyt::Entry.build(filepath)
       obj = if entry.directory?
-              Gyt::Tree.build_from_dir(entry)
+              Gyt::Tree.build_from_dir(self, entry)
             else
-              Gyt::Blob.new(entry.content, entry.name)
+              Gyt::Blob.new(self, entry.content, entry.name)
             end
       index.add(obj)
     end
@@ -53,10 +53,10 @@ module Gyt
         puts "Nothing to commit"
         return
       end
-      commit_tree = Gyt::Tree.new(staged)
+      commit_tree = Gyt::Tree.new(self, staged)
       options[:parent] = head unless head.nil?
-      commit = Gyt::Commit.new(msg, commit_tree, options)
-      commit.write(self)
+      commit = Gyt::Commit.new(self, msg, commit_tree, options)
+      commit.write
       refs.get("refs/heads/master").set(commit.id)
       index.clean
 
