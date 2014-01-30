@@ -21,7 +21,7 @@ module Gyt
 
     def initialize(directory_path)
       @dir = Directory.new repository_path_for(directory_path)
-      @gyt_path = File.join(directory_path, ".gyt")
+      @gyt_path = File.join(@dir.path, ".gyt")
     end
 
     def path
