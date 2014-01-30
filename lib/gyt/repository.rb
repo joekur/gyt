@@ -3,13 +3,24 @@ module Gyt
     attr_reader :dir, :gyt_path
 
     def self.init(directory_path)
+      gyt_path = File.join(directory_path, ".gyt")
+      if File.directory?(gyt_path)
+        puts "Reinitializing existing Gyt repository in #{directory_path}"
+      else
+        puts "Initializing new Gyt repository in #{directory_path}"
+        Dir.mkdir(gyt_path)
+      end
       repo = self.new(directory_path)
       repo.setup_gyt_folder
       repo
     end
 
+    def self.repository?(directory_path)
+      File.directory? File.join(directory_path, ".gyt")
+    end
+
     def initialize(directory_path)
-      @dir = Directory.new(directory_path)
+      @dir = Directory.new repository_path_for(directory_path)
       @gyt_path = File.join(directory_path, ".gyt")
     end
 
@@ -22,12 +33,6 @@ module Gyt
     end
 
     def setup_gyt_folder
-      if File.directory?(@gyt_path)
-        puts "Reinitializing existing Gyt repository in #{@gyt_path}"
-      else
-        puts "Initializing new Gyt repository in #{@gyt_path}"
-      end
-      init_folder('/')
       init_folder('objects')
       init_file('index')
       init_file('HEAD')
@@ -102,9 +107,9 @@ module Gyt
       commit = head_commit
       while !commit.nil?
         puts "commit #{commit.id}".yellow
-        puts "author: #{commit.author}"
+        puts "Author: #{commit.author}"
         puts ""
-        puts commit.message
+        puts "    " + commit.message
         puts ""
 
         commit = commit.parent
@@ -129,6 +134,14 @@ module Gyt
 
     def index
       @index ||= Gyt::Index.new(self)
+    end
+
+    def repository_path_for(path)
+      while path != "/"
+        return path if Gyt::Repository.repository?(path)
+        path = File.dirname(path)
+      end
+      raise "Fatal - not a gyt repository"
     end
   end
 end

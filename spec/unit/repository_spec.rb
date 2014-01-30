@@ -1,7 +1,33 @@
 require "spec_helper"
 
 describe Gyt::Repository do
-  describe "init" do
+  describe "self.respository?" do
+    it "is true if directory has .gyt folder" do
+      Gyt::Repository.repository?(test_repo.path).should be_true
+    end
+
+    it "is false if directory has no .gyt folder" do
+      Gyt::Repository.repository?('/').should be_false
+    end
+  end
+
+  describe "self.new" do
+    it "can be passed the subdirectory of a gyt repository" do
+      dir = File.join(test_repo.path, "subdir")
+      Dir.mkdir(dir)
+      repo = Gyt::Repository.new(dir)
+
+      repo.path.should == test_repo.path
+    end
+
+    it "raises error when not a gyt repository" do
+      expect do
+        Gyt::Repository.new('/')
+      end.to raise_error("Fatal - not a gyt repository")
+    end
+  end
+
+  describe "self.init" do
     it "creates .gyt directory" do
       repo = Gyt::Repository.init(@test_dir)
 

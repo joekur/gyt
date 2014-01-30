@@ -10,34 +10,38 @@ class GytCLI < Thor
 
   desc "add FILE, add DIRECTORY", "Add file to index"
   def add(filepath)
-    repo = Gyt::Repository.new(current_dir)
-    repo.add(filepath)
+    current_repo.add(filepath)
   end
 
   desc "status", "Show files to be committed"
   def status
-    repo = Gyt::Repository.new(current_dir)
-    repo.status
+    current_repo.status
   end
 
   desc "commit", "Commit files to history"
   method_option :message, aliases: "-m", desc: "Commit message", required: true
   def commit
-    repo = Gyt::Repository.new(current_dir)
-    repo.commit!(options[:message])
+    current_repo.commit!(options[:message])
   end
 
   desc "log", "Show commit history"
   def log
-    repo = Gyt::Repository.new(current_dir)
-    repo.log
+    current_repo.log
   end
 
   no_commands do
     def current_dir
       File.expand_path('.')
     end
+
+    def current_repo
+      repo = Gyt::Repository.new(current_dir)
+    end
   end
 end
 
-GytCLI.start
+begin
+  GytCLI.start
+rescue => e
+  puts e.message
+end
