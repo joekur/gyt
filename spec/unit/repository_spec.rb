@@ -160,10 +160,37 @@ describe Gyt::Repository do
       test_repo.branch.should == "new_branch"
     end
 
+    it "can point head to specific commit" do
+      write_test_file("readme.md", "Gyt rools!")
+      test_repo.add("readme.md")
+      first_commit = test_repo.commit!("first commit")
+
+      write_test_file("config.rb", "my config")
+      test_repo.add("config.rb")
+      second_commit = test_repo.commit!("second commit")
+
+      test_repo.checkout(first_commit.id)
+
+      test_repo.head.should be_detached
+      test_repo.head.id.should == first_commit.id
+    end
+
     it "raises an error when target doesn't exist" do
       expect do
         test_repo.checkout "idontexist"
       end.to raise_error("pathspec 'idontexist' did not match any file(s) known to gyt")
+    end
+
+    it "raises an error when target is a non-commit sha" do
+      id = Gyt::Store.new(test_repo).write("blah")
+      expect do
+        test_repo.checkout id
+      end.to raise_error("pathspec '#{id}' did not match any file(s) known to gyt")
+    end
+
+    it "does nothing when we are already on the specified branch" do
+      test_repo.checkout "master"
+      test_repo.branch.should == "master"
     end
   end
 

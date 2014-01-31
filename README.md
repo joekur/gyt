@@ -13,4 +13,6 @@ $ gyt add ./file/path
 $ gyt status
 $ gyt commit -m "First commit"
 $ gyt log
+$ gyt checkout -b release
+$ gyt checkout master
 ```

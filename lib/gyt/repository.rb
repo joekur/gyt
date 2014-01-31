@@ -77,13 +77,33 @@ module Gyt
       checkout(branch)
     end
 
-    def checkout(target)
+    def checkout(target, options={})
       ref_path = "refs/heads/#{target}"
+
+      if target == branch
+        puts "Already on '#{target}'"
+        return
+      end
+
+      if options[:branch]
+        # create new branch
+        refs.create(ref_path, head.id)
+      end
+
       ref = refs.get(ref_path)
-      if ref.nil?
-        raise "pathspec '#{target}' did not match any file(s) known to gyt"
-      else
+      if ref
+        # target is a branch
         head.write("ref: #{ref_path}")
+        puts "Switched to branch '#{target}'"
+      else
+        obj = Gyt::Obj.read(self, target)
+        if obj && obj.type == Gyt::Commit::TYPE
+          # target is a commit id
+          head.write(obj.id)
+        else
+          # target doesn't exist
+          raise "pathspec '#{target}' did not match any file(s) known to gyt"
+        end
       end
     end
 
