@@ -30,12 +30,17 @@ class GytCLI < Thor
   desc "checkout", "Checkout branch, commit, tag"
   method_option :branch, aliases: "-b", desc: "Create new branch", banner: "<branch>", type: :boolean
   def checkout(target)
-    if options[:branch]
-      current_repo.create_branch(target)
+    if target == current_repo.branch
+      puts "Already on '#{target}'"
     else
-      current_repo.checkout(target)
+      if options[:branch]
+        current_repo.create_branch(target)
+        puts "Switched to a new branch '#{target}'"
+      else
+        current_repo.checkout(target)
+        puts "Switched to branch '#{target}'"
+      end
     end
-    puts "Switched to a new branch '#{target}'"
   end
 
   no_commands do
@@ -44,7 +49,7 @@ class GytCLI < Thor
     end
 
     def current_repo
-      repo = Gyt::Repository.new(current_dir)
+      @repo ||= Gyt::Repository.new(current_dir)
     end
   end
 end
