@@ -2,6 +2,7 @@ require "thor"
 require "colorize"
 
 require "gyt/repository"
+require "gyt/head"
 require "gyt/entry"
 require "gyt/document"
 require "gyt/directory"

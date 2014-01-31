@@ -42,7 +42,7 @@ describe Gyt::Repository do
       repo = Gyt::Repository.init(@test_dir)
 
       File.read(File.join(repo.gyt_path, "HEAD")).should == "ref: refs/heads/master"
-      repo.head.should be_nil
+      repo.head.id.should be_nil
     end
   end
 
@@ -103,7 +103,7 @@ describe Gyt::Repository do
       test_repo.add("readme.md")
       commit = test_repo.commit!("message")
 
-      test_repo.head.should == commit.id
+      test_repo.head.id.should == commit.id
     end
 
     it "adds current commit as its parent" do
@@ -116,6 +116,24 @@ describe Gyt::Repository do
       second_commit = test_repo.commit!("second commit")
 
       second_commit.parent_id.should == first_commit.id
+    end
+  end
+
+  describe "create_branch" do
+    before(:each) do
+      write_test_file("readme.md", "Gyt rools!")
+      test_repo.add("readme.md")
+      @first_commit = test_repo.commit!("first commit")
+    end
+
+    it "creates ref with current head" do
+      test_repo.create_branch("new_branch")
+      test_repo.refs.get("refs/heads/new_branch").id.should == @first_commit.id
+    end
+
+    it "points head to new branch" do
+      test_repo.create_branch("new_branch")
+      test_repo.branch.should == "new_branch"
     end
   end
 

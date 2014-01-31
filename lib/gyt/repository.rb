@@ -59,33 +59,24 @@ module Gyt
         return
       end
       commit_tree = Gyt::Tree.new(self, staged)
-      options[:parent] = head unless head.nil?
+      options[:parent] = head.id unless head.id.nil?
       commit = Gyt::Commit.new(self, msg, commit_tree, options)
       commit.write
       refs.get("refs/heads/master").set(commit.id)
+      head.id = commit.id
       index.clean
 
       commit
     end
 
-    def head
-      head_file = File.read(File.join(@gyt_path, "HEAD"))
-      if head_file.include?("ref: ")
-        ref_path = head_file.split(" ")[1]
-        refs.get(ref_path).id
-      else
-        head_file
-      end
-    end
-
-    def head_commit
-      head.nil? ? nil : Gyt::Commit.read(self, head)
-    end
-
     def create_branch(branch)
       ref_path = "refs/heads/#{branch}"
-      refs.create(ref_path)
-      File.write(File.join(@gyt_path, "HEAD"), "ref: #{ref_path}")
+      refs.create(ref_path, head.id)
+      head.write("ref: #{ref_path}")
+    end
+
+    def branch
+      head.branch
     end
 
     def staged
@@ -93,6 +84,7 @@ module Gyt
     end
 
     def status
+      puts "# On branch #{branch}"
       puts "Changes to be committed:"
       index.objects.each do |obj|
         puts obj.name
@@ -103,8 +95,12 @@ module Gyt
       @refs ||= Gyt::Refs.new(self)
     end
 
+    def head
+      @head ||= Gyt::Head.new(self)
+    end
+
     def log
-      commit = head_commit
+      commit = head.commit
       while !commit.nil?
         puts "commit #{commit.id}".yellow
         puts "Author: #{commit.author}"
