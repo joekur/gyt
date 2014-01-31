@@ -27,6 +27,17 @@ class GytCLI < Thor
     current_repo.log
   end
 
+  desc "checkout", "Checkout branch, commit, tag"
+  method_option :branch, aliases: "-b", desc: "Create new branch", banner: "<branch>", type: :boolean
+  def checkout(target)
+    if options[:branch]
+      current_repo.create_branch(target)
+    else
+      current_repo.checkout(target)
+    end
+    puts "Switched to a new branch '#{target}'"
+  end
+
   no_commands do
     def current_dir
       File.expand_path('.')

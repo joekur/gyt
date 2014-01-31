@@ -106,6 +106,15 @@ describe Gyt::Repository do
       test_repo.head.id.should == commit.id
     end
 
+    it "updates the current branches head" do
+      test_repo.create_branch("release")
+      write_test_file("readme.md", "Gyt rools!")
+      test_repo.add("readme.md")
+      commit = test_repo.commit!("message")
+
+      test_repo.refs.get("refs/heads/release").id.should == commit.id
+    end
+
     it "adds current commit as its parent" do
       write_test_file("readme.md", "Gyt rools!")
       test_repo.add("readme.md")
@@ -131,9 +140,30 @@ describe Gyt::Repository do
       test_repo.refs.get("refs/heads/new_branch").id.should == @first_commit.id
     end
 
-    it "points head to new branch" do
+    it "checks out the new branch" do
+      test_repo.should_receive(:checkout).with("new_branch")
       test_repo.create_branch("new_branch")
+    end
+  end
+
+  describe "checkout" do
+    it "can point head to existing branch" do
+      write_test_file("readme.md", "Gyt rools!")
+      test_repo.add("readme.md")
+      first_commit = test_repo.commit!("first commit")
+      test_repo.create_branch("new_branch")
+
+      test_repo.checkout "master"
+      test_repo.branch.should == "master"
+
+      test_repo.checkout "new_branch"
       test_repo.branch.should == "new_branch"
+    end
+
+    it "raises an error when target doesn't exist" do
+      expect do
+        test_repo.checkout "idontexist"
+      end.to raise_error("pathspec 'idontexist' did not match any file(s) known to gyt")
     end
   end
 

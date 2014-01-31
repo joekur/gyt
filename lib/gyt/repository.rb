@@ -62,8 +62,10 @@ module Gyt
       options[:parent] = head.id unless head.id.nil?
       commit = Gyt::Commit.new(self, msg, commit_tree, options)
       commit.write
-      refs.get("refs/heads/master").set(commit.id)
+
+      head.ref.set(commit.id)
       head.id = commit.id
+
       index.clean
 
       commit
@@ -72,7 +74,17 @@ module Gyt
     def create_branch(branch)
       ref_path = "refs/heads/#{branch}"
       refs.create(ref_path, head.id)
-      head.write("ref: #{ref_path}")
+      checkout(branch)
+    end
+
+    def checkout(target)
+      ref_path = "refs/heads/#{target}"
+      ref = refs.get(ref_path)
+      if ref.nil?
+        raise "pathspec '#{target}' did not match any file(s) known to gyt"
+      else
+        head.write("ref: #{ref_path}")
+      end
     end
 
     def branch

@@ -1,7 +1,7 @@
 module Gyt
   class Head
     attr_accessor :id
-    attr_reader :branch
+    attr_reader :branch, :ref
 
     def initialize(repo)
       @repo = repo
