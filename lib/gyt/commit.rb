@@ -30,7 +30,7 @@ module Gyt
       raise "Not a commit object" if type != Gyt::Commit::TYPE
 
       meta_hash = {}
-      meta.each_line do |meta_info|
+      meta.split("\n").each do |meta_info|
         key, value = meta_info.split(" ", 2)
         meta_hash[key.to_sym] = value
       end

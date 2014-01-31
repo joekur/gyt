@@ -20,8 +20,18 @@ module Gyt
     end
 
     def read(id)
-      zipped_content = File.read(path_for(id))
-      Zlib::Inflate.inflate(zipped_content)
+      matching_dir = Gyt::Directory.new File.join(db_path, id[0,2])
+      object_files = matching_dir.files
+      matching_object = object_files.find do |file|
+        file.name[0, id.length - 2] == id[2..-1]
+      end
+
+      if matching_object
+        zipped_content = File.read(matching_object.path)
+        Zlib::Inflate.inflate(zipped_content)
+      else
+        nil
+      end
     rescue Errno::ENOENT
       nil
     end
@@ -30,8 +40,14 @@ module Gyt
       File.delete(path_for(id))
     end
 
+  private
+
     def path_for(id)
       File.join(@repo.gyt_path, "objects", id[0,2], id[2,38])
+    end
+
+    def db_path
+      File.join(@repo.gyt_path, "objects")
     end
   end
 end

@@ -5,13 +5,19 @@ describe Gyt::Store do
 
   it "can write and retrieve data" do
     data = "this is some data"
-    key = store.write(data)
-    store.read(key).should == data
+    id = store.write(data)
+    store.read(id).should == data
   end
 
   describe "read" do
     it "returns nil if file doesn't exist" do
       store.read("idontexist").should be_nil
+    end
+
+    it "can accept a shortened id" do
+      data = "this is some data"
+      id = store.write(data)
+      store.read(id[0,7]).should == data
     end
   end
 

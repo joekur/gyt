@@ -169,7 +169,22 @@ describe Gyt::Repository do
       test_repo.add("config.rb")
       second_commit = test_repo.commit!("second commit")
 
-      test_repo.checkout(first_commit.id)
+      test_repo.checkout first_commit.id
+
+      test_repo.head.should be_detached
+      test_repo.head.id.should == first_commit.id
+    end
+
+    it "can accept a shortend commit sha" do
+      write_test_file("readme.md", "Gyt rools!")
+      test_repo.add("readme.md")
+      first_commit = test_repo.commit!("first commit")
+
+      write_test_file("config.rb", "my config")
+      test_repo.add("config.rb")
+      second_commit = test_repo.commit!("second commit")
+
+      test_repo.checkout first_commit.id[0,7]
 
       test_repo.head.should be_detached
       test_repo.head.id.should == first_commit.id
