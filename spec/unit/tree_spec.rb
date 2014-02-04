@@ -83,4 +83,46 @@ describe Gyt::Tree do
       tree.to_store.should == "tree\0blob #{blob.id} file.txt\ntree #{subtree.id} src"
     end
   end
+
+  describe "merge" do
+    it "includes unique files from both" do
+      child_a = Gyt::Blob.new(test_repo, "hello", "file1")
+      child_b = Gyt::Blob.new(test_repo, "goodbye", "file2")
+      tree = Gyt::Tree.new(test_repo, [child_a])
+      tree.merge([child_b])
+
+      tree.children.should include(child_a)
+      tree.children.should include(child_b)
+    end
+
+    it "includes only one copy of duplicate children" do
+      blob = Gyt::Blob.new(test_repo, "hello", "file1")
+      tree = Gyt::Tree.new(test_repo, [blob])
+      tree.merge([blob])
+
+      tree.children.should == [blob]
+    end
+
+    it "takes the new version when there is a duplicate" do
+      child_a = Gyt::Blob.new(test_repo, "hello", "file1")
+      child_b = Gyt::Blob.new(test_repo, "hello-modified", "file1")
+      tree = Gyt::Tree.new(test_repo, [child_a])
+      tree.merge([child_b])
+
+      tree.children.should == [child_b]
+    end
+  end
+
+  describe "children_hash" do
+    it "returns a hash of all children with their names as keys" do
+      blob1 = Gyt::Blob.new(test_repo, "text", "file.txt")
+      blob2 = Gyt::Blob.new(test_repo, "text2", "file2.txt")
+      tree = Gyt::Tree.new(test_repo, [blob1, blob2])
+
+      tree.children_hash.should == {
+        "file.txt" => blob1,
+        "file2.txt" => blob2
+      }
+    end
+  end
 end

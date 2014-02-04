@@ -58,8 +58,14 @@ module Gyt
         puts "Nothing to commit"
         return
       end
-      commit_tree = Gyt::Tree.new(self, staged)
-      options[:parent] = head.id unless head.id.nil?
+
+      if head.id.nil?
+        commit_tree = Gyt::Tree.new(self, staged)
+      else
+        options[:parent] = head.id
+        commit_tree = head.commit.tree.merge(staged)
+      end
+
       commit = Gyt::Commit.new(self, msg, commit_tree, options)
       commit.write
 

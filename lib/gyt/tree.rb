@@ -35,6 +35,13 @@ module Gyt
       self.new(repo, children, directory.name)
     end
 
+    def self.hash_children(children)
+      children.inject({}) do |hash, child|
+        hash[child.name] = child
+        hash
+      end
+    end
+
     attr_reader :children
     attr_accessor :name
     def initialize(repo, children=[], name=nil)
@@ -45,6 +52,19 @@ module Gyt
 
     def add_child(child)
       children << child
+    end
+
+    def merge(new_children)
+      new_children_hash = Gyt::Tree.hash_children(new_children)
+      merged_hash = children_hash.merge(new_children_hash)
+
+      @children = merged_hash.values
+
+      self
+    end
+
+    def children_hash
+      Gyt::Tree.hash_children(children)
     end
 
     def header
